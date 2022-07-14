@@ -24,6 +24,18 @@ jobs:
           ITCH_GAME: RetroArch
           ITCH_USER: gadsby
           PACKAGE: retroarch-windows-weekly.zip
+    - name: windows x64 cores
+      run: |
+          rm -rf * 
+          wget http://buildbot.libretro.com/nightly/windows/x86_64/RetroArch_cores.7z
+    - uses: josephbmanley/butler-publish-itchio-action@master
+      name: deploy to itch.io
+      env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
+          CHANNEL: windowsx64:cores-weekly
+          ITCH_GAME: RetroArch
+          ITCH_USER: gadsby
+          PACKAGE: RetroArch_cores.7z         
     - name: windows x32
       run: |
           rm -rf * 
@@ -41,6 +53,18 @@ jobs:
           ITCH_GAME: RetroArch
           ITCH_USER: gadsby
           PACKAGE: retroarch-windows-x32-weekly.zip
+    - name: windows x32 cores
+      run: |
+          rm -rf * 
+          wget http://buildbot.libretro.com/nightly/windows/x86/RetroArch_cores.7z
+    - uses: josephbmanley/butler-publish-itchio-action@master
+      name: deploy to itch.io
+      env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
+          CHANNEL: windowsx32:cores-weekly
+          ITCH_GAME: RetroArch
+          ITCH_USER: gadsby
+          PACKAGE: RetroArch_cores.7z            
     - name: linux x64
       run: |
           rm -rf *
@@ -54,7 +78,7 @@ jobs:
       name: deploy to itch.io
       env:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
-          CHANNEL: linux-x86_64
+          CHANNEL: linux-x86_64-weekly
           ITCH_GAME: RetroArch
           ITCH_USER: gadsby
           PACKAGE: retroarch-linux-x86_64-weekly.zip
@@ -75,6 +99,18 @@ jobs:
           ITCH_GAME: RetroArch
           ITCH_USER: gadsby
           PACKAGE: retroarch-linux-x86_64-qt-weekly.zip
+    - name: linux x64 cores
+      run: |
+          rm -rf *
+          wget http://buildbot.libretro.com/nightly/linux/x86_64/RetroArch_cores.7z
+    - uses: josephbmanley/butler-publish-itchio-action@master
+      name: deploy to itch.io
+      env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
+          CHANNEL: linux-x86_64:cores-weekly
+          ITCH_GAME: RetroArch
+          ITCH_USER: gadsby
+          PACKAGE: RetroArch_cores.7z          
     - name: linux x86
       run: |
           rm -rf *
@@ -108,4 +144,16 @@ jobs:
           CHANNEL: linux-x86-qt-weekly
           ITCH_GAME: RetroArch
           ITCH_USER: gadsby
-          PACKAGE: retroarch-linux-x86-qt-weekly.zip                              
+          PACKAGE: retroarch-linux-x86-qt-weekly.zip
+    - name: linux x86 cores
+      run: |
+          rm -rf *
+          wget http://buildbot.libretro.com/nightly/linux/x86/RetroArch_cores.7z
+    - uses: josephbmanley/butler-publish-itchio-action@master
+      name: deploy to itch.io
+      env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
+          CHANNEL: linux-x86:cores-weekly
+          ITCH_GAME: RetroArch
+          ITCH_USER: gadsby
+          PACKAGE: RetroArch_cores.7z          
