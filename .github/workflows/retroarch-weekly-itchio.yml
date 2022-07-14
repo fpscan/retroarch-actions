@@ -1,0 +1,111 @@
+name: Weekly (nightly)
+on:
+  schedule:
+  - cron: "0 13 * * 1"
+    
+jobs:
+  download_game:
+    name: Download nightly from buildbot
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: windows x64
+      run: wget http://buildbot.libretro.com/nightly/windows/x86_64/RetroArch.7z
+    - name: Zip it up!    
+      run: |
+          7z e RetroArch.7z -y
+          rm -rf RetroArch.7z
+          7z a retroarch-windows-weekly.zip * -y
+    - uses: josephbmanley/butler-publish-itchio-action@master
+      name: deploy to itch.io
+      env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
+          CHANNEL: windows-weekly
+          ITCH_GAME: RetroArch
+          ITCH_USER: gadsby
+          PACKAGE: retroarch-windows-weekly.zip
+    - name: windows x32
+      run: |
+          rm -rf * 
+          wget http://buildbot.libretro.com/nightly/windows/x86/RetroArch.7z
+    - name: Zip it up!    
+      run: |
+          7z e RetroArch.7z -y
+          rm -rf RetroArch.7z
+          7z a retroarch-windows-x32-weekly.zip * -y
+    - uses: josephbmanley/butler-publish-itchio-action@master
+      name: deploy to itch.io
+      env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
+          CHANNEL: windowsx32-weekly
+          ITCH_GAME: RetroArch
+          ITCH_USER: gadsby
+          PACKAGE: retroarch-windows-x32-weekly.zip
+    - name: linux x64
+      run: |
+          rm -rf *
+          wget http://buildbot.libretro.com/nightly/linux/x86_64/RetroArch.7z
+    - name: Zip it up!    
+      run: |
+          7z e RetroArch.7z -y
+          rm -rf RetroArch.7z
+          7z a retroarch-linux-x86_64-weekly.zip * -y
+    - uses: josephbmanley/butler-publish-itchio-action@master
+      name: deploy to itch.io
+      env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
+          CHANNEL: linux-x86_64
+          ITCH_GAME: RetroArch
+          ITCH_USER: gadsby
+          PACKAGE: retroarch-linux-x86_64-weekly.zip
+    - name: linux x64-qt
+      run: |
+          rm -rf *
+          wget http://buildbot.libretro.com/nightly/linux/x86_64/RetroArch_Qt.7z
+    - name: Zip it up!    
+      run: |
+          7z e RetroArch_Qt.7z -y
+          rm -rf RetroArch_Qt.7z
+          7z a retroarch-linux-x86_64-qt-weekly.zip * -y
+    - uses: josephbmanley/butler-publish-itchio-action@master
+      name: deploy to itch.io
+      env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
+          CHANNEL: linux-x86_64-qt-weekly
+          ITCH_GAME: RetroArch
+          ITCH_USER: gadsby
+          PACKAGE: retroarch-linux-x86_64-qt-weekly.zip
+    - name: linux x86
+      run: |
+          rm -rf *
+          wget http://buildbot.libretro.com/nightly/linux/x86/RetroArch.7z
+    - name: Zip it up!    
+      run: |
+          7z e RetroArch.7z -y
+          rm -rf RetroArch.7z
+          7z a retroarch-linux-x86-weekly.zip * -y
+    - uses: josephbmanley/butler-publish-itchio-action@master
+      name: deploy to itch.io
+      env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
+          CHANNEL: linux-x86-weekly
+          ITCH_GAME: RetroArch
+          ITCH_USER: gadsby
+          PACKAGE: retroarch-linux-x86-weekly.zip
+    - name: linux x86-qt
+      run: |
+          rm -rf *
+          wget http://buildbot.libretro.com/nightly/linux/x86/RetroArch_Qt.7z
+    - name: Zip it up!    
+      run: |
+          7z e RetroArch_Qt.7z -y
+          rm -rf RetroArch_Qt.7z
+          7z a retroarch-linux-x86-qt-weekly.zip * -y
+    - uses: josephbmanley/butler-publish-itchio-action@master
+      name: deploy to itch.io
+      env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
+          CHANNEL: linux-x86-qt-weekly
+          ITCH_GAME: RetroArch
+          ITCH_USER: gadsby
+          PACKAGE: retroarch-linux-x86-qt-weekly.zip                              
