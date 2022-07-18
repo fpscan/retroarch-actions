@@ -22,7 +22,7 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
           CHANNEL: windows-weekly
           ITCH_GAME: RetroArch
-          ITCH_USER: gadsby
+          ITCH_USER: retroarchofficial
           PACKAGE: retroarch-windows-weekly.zip
     - name: windows x64 cores
       run: |
@@ -34,7 +34,7 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
           CHANNEL: windowsx64:cores-weekly
           ITCH_GAME: RetroArch
-          ITCH_USER: gadsby
+          ITCH_USER: retroarchofficial
           PACKAGE: RetroArch_cores.7z         
     - name: windows x32
       run: |
@@ -51,7 +51,7 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
           CHANNEL: windowsx32-weekly
           ITCH_GAME: RetroArch
-          ITCH_USER: gadsby
+          ITCH_USER: retroarchofficial
           PACKAGE: retroarch-windows-x32-weekly.zip
     - name: windows x32 cores
       run: |
@@ -63,7 +63,7 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
           CHANNEL: windowsx32:cores-weekly
           ITCH_GAME: RetroArch
-          ITCH_USER: gadsby
+          ITCH_USER: retroarchofficial
           PACKAGE: RetroArch_cores.7z            
     - name: linux x64
       run: |
@@ -80,7 +80,7 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
           CHANNEL: linux-x86_64-weekly
           ITCH_GAME: RetroArch
-          ITCH_USER: gadsby
+          ITCH_USER: retroarchofficial
           PACKAGE: retroarch-linux-x86_64-weekly.zip
     - name: linux x64-qt
       run: |
@@ -97,7 +97,7 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
           CHANNEL: linux-x86_64-qt-weekly
           ITCH_GAME: RetroArch
-          ITCH_USER: gadsby
+          ITCH_USER: retroarchofficial
           PACKAGE: retroarch-linux-x86_64-qt-weekly.zip
     - name: linux x64 cores
       run: |
@@ -109,7 +109,7 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
           CHANNEL: linux-x86_64:cores-weekly
           ITCH_GAME: RetroArch
-          ITCH_USER: gadsby
+          ITCH_USER: retroarchofficial
           PACKAGE: RetroArch_cores.7z          
     - name: linux x86
       run: |
@@ -126,7 +126,7 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
           CHANNEL: linux-x86-weekly
           ITCH_GAME: RetroArch
-          ITCH_USER: gadsby
+          ITCH_USER: retroarchofficial
           PACKAGE: retroarch-linux-x86-weekly.zip
     - name: linux x86-qt
       run: |
@@ -143,7 +143,7 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
           CHANNEL: linux-x86-qt-weekly
           ITCH_GAME: RetroArch
-          ITCH_USER: gadsby
+          ITCH_USER: retroarchofficial
           PACKAGE: retroarch-linux-x86-qt-weekly.zip
     - name: linux x86 cores
       run: |
@@ -155,5 +155,5 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
           CHANNEL: linux-x86:cores-weekly
           ITCH_GAME: RetroArch
-          ITCH_USER: gadsby
+          ITCH_USER: retroarchofficial
           PACKAGE: RetroArch_cores.7z          
