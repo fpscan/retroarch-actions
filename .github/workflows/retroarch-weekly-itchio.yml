@@ -2,6 +2,18 @@ name: Weekly (nightly)
 on:
   schedule:
   - cron: "0 13 * * 1"
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning' 
+        type: choice
+        options:
+        - info
+        - warning
+        - debug 
+        - release
     
 jobs:
   download_game:
