@@ -1,0 +1,195 @@
+
+name: RetroArch AppImage Build
+
+on: 
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Reason'     
+        required: true
+        default: 'Release'
+      tags:
+        description: 'Tags' 
+  watch: # this is a hack that lets repo owners trigger a build by starring
+    types: [started]
+    if: github.actor == github.event.repository.owner.login
+
+jobs:
+  Assets:
+    name: Collect and bundle assets
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - run: |
+        git clone https://github.com/libretro/retroarch-assets.git && mv retroarch-assets assets && rm -rf assets/branding assets/wallpaper/* assets/src assets/.git
+        git clone https://github.com/libretro/common-overlays.git && mv common-overlays overlays && rm -rf overlays/.git
+        git clone https://github.com/libretro/retroarch-joypad-autoconfig.git && mv retroarch-joypad-autoconfig autoconfig && rm -rf autoconfig/.git
+        git clone https://github.com/libretro/libretro-super.git && mv libretro-super/dist/info ./ && rm -rf libretro-super
+        mkdir shaders
+    - name: fetch shaders
+      working-directory: shaders
+      run: |
+        git clone https://github.com/libretro/common-shaders.git && mv common-shaders shaders_cg && rm -rf shaders_cg/.git
+        git clone https://github.com/libretro/glsl-shaders.git && mv glsl-shaders shaders_glsl && rm -rf shaders_glsl/.git
+        git clone https://github.com/libretro/slang-shaders.git && mv slang-shaders shaders_slang && rm -rf shaders_slang/.git
+    - run: |
+        git clone https://github.com/libretro/libretro-database.git && mv libretro-database/rdb ./database && mv libretro-database/cht ./cheats && rm -rf libretro-database
+        git clone https://github.com/libretro/RetroArch.git
+        mkdir -p filters/audio && mkdir -p filters/video
+    - name: Build audio filters
+      working-directory: RetroArch/libretro-common/audio/dsp_filters
+      run: make && mv *so ../../../../filters/audio && mv *dsp ../../../../filters/audio
+    - name: Build video filters
+      working-directory: RetroArch/gfx/video_filters
+      run: make && mv *so ../../../filters/video && mv *filt ../../../filters/video
+    - run: rm -rf RetroArch
+    - name: Zip it up!
+      run: 7z a -mx=9 -x'!README.md' -x'!LICENSE' assets.7z *
+    - name: Upload Windows assets bundle
+      uses: actions/upload-artifact@v2
+      with:
+        name: assets.7z
+        path: assets.7z
+    - run: |
+        mkdir retroarch
+        mv assets retroarch/
+        mv overlays retroarch/overlay
+        mv autoconfig retroarch/
+        mv info retroarch/cores
+        mv shaders retroarch/
+        mv filters retroarch/
+        mkdir retroarch/database && mv database retroarch/database/rdb
+        mv cheats retroarch/
+        mkdir RetroArch-Linux-x86_64-Nightly.AppImage.config
+        mv retroarch/ RetroArch-Linux-x86_64-Nightly.AppImage.config
+        7z a -mx=9 RetroArch-Linux-x86_64-Nightly.AppImage.config.7z RetroArch-Linux-x86_64-Nightly.AppImage.config
+    - name: Upload Linux AppImage assets bundle
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: RetroArch-Linux-x86_64-Nightly.AppImage.config.7z
+        tag: Assets
+        asset_name: RetroArch-Linux-x86_64-Nightly.AppImage.config.7z
+        overwrite: true
+
+  Playtest_Windows_Cores:
+    name: Collect Cores for Steam Playtest Windows
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: fetch windows cores
+      run: |
+        wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/pcsx_rearmed_libretro.dll.zip && unzip -o pcsx_rearmed_libretro.dll.zip && rm pcsx_rearmed_libretro.dll.zip && echo https://github.com/libretro/pcsx_rearmed >> pcsx_rearmed_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/pcsx_rearmed/master/COPYING && mv COPYING pcsx_rearmed_libretro-LICENSE.txt
+        wget http://buildbot.libretro.com/nightly/windows/x86_64/latest/mesen_libretro.dll.zip && unzip -o mesen_libretro.dll.zip && rm mesen_libretro.dll.zip && echo https://github.com/SourMesen/Mesen >> mesen_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/SourMesen/Mesen/master/LICENSE && mv LICENSE mesen_libretro-LICENSE.txt
+        wget http://buildbot.libretro.com/nightly/windows/x86_64/latest/mesen-s_libretro.dll.zip && unzip -o mesen-s_libretro.dll.zip && rm mesen-s_libretro.dll.zip && echo https://github.com/SourMesen/Mesen-S >> mesen-s_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/SourMesen/Mesen-S/master/LICENSE && mv LICENSE mesen-s_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/kronos_libretro.dll.zip && unzip -o kronos_libretro.dll.zip && rm kronos_libretro.dll.zip && echo https://github.com/libretro/yabause >> kronos_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/yabause/master/yabause/COPYING && mv COPYING kronos_libretro-LICENSE.txt
+        wget http://buildbot.libretro.com/nightly/windows/x86_64/latest/fbneo_libretro.dll.zip && unzip -o fbneo_libretro.dll.zip && rm fbneo_libretro.dll.zip && echo https://github.com/libretro/FBNeo >> fbneo_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/finalburnneo/FBNeo/master/src/license.txt && mv license.txt fbneo_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/genesis_plus_gx_libretro.dll.zip && unzip -o genesis_plus_gx_libretro.dll.zip && rm genesis_plus_gx_libretro.dll.zip && echo https://github.com/libretro/Genesis-Plus-GX >> genesis_plus_gx_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/Genesis-Plus-GX/master/LICENSE.txt && mv LICENSE.txt genesis_plus_gx_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/genesis_plus_gx_wide_libretro.dll.zip && unzip -o genesis_plus_gx_wide_libretro.dll.zip && rm genesis_plus_gx_wide_libretro.dll.zip
+        wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/mgba_libretro.dll.zip && unzip -o mgba_libretro.dll.zip && rm mgba_libretro.dll.zip && echo https://github.com/libretro/mgba >> mgba_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/mgba/master/LICENSE && mv LICENSE mgba_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/parallel_n64_libretro.dll.zip && unzip -o parallel_n64_libretro.dll.zip && rm parallel_n64_libretro.dll.zip && echo https://github.com/libretro/parallel-n64 >> parallel_n64_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/mupen64plus-libretro-nx/develop/LICENSE && mv LICENSE parallel_n64_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/windows/x86_64/latest/stella_libretro.dll.zip && unzip -o stella_libretro.dll.zip && rm stella_libretro.dll.zip && echo https://github.com/stella-emu/stella >> stella_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/stella-emu/stella/master/License.txt && mv License.txt stella_libretro-LICENSE.txt
+        wget http://buildbot.libretro.com/nightly/windows/x86_64/latest/sameboy_libretro.dll.zip && unzip -o sameboy_libretro.dll.zip && rm sameboy_libretro.dll.zip && echo https://github.com/libretro/SameBoy >> sameboy_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/SameBoy/buildbot/LICENSE && mv LICENSE sameboy_libretro-LICENSE.txt
+    - name: Zip it up!
+      run: 7z a -mx=9 -x'!README.md' -x'!LICENSE' windows_cores.7z *
+    - name: Upload Windows assets bundle
+      uses: actions/upload-artifact@v2
+      with:
+        name: windows_cores.7z
+        path: windows_cores.7z
+    - name: Upload cores
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: windows_cores.7z
+        tag: Playtest
+        asset_name: windows_cores.7z
+        overwrite: true
+        
+  Playtest_Linux_Cores:
+    name: Collect Cores for Steam Playtest Linux
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: fetch linux cores
+      run: |
+        wget https://buildbot.libretro.com/nightly/linux/x86_64/latest/pcsx_rearmed_libretro.so.zip && unzip -o pcsx_rearmed_libretro.so.zip && rm pcsx_rearmed_libretro.so.zip && echo https://github.com/libretro/pcsx_rearmed >> pcsx_rearmed_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/pcsx_rearmed/master/COPYING && mv COPYING pcsx_rearmed_libretro-LICENSE.txt
+        wget http://buildbot.libretro.com/nightly/linux/x86_64/latest/mesen_libretro.so.zip && unzip -o mesen_libretro.so.zip && rm mesen_libretro.so.zip && echo https://github.com/SourMesen/Mesen >> mesen_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/SourMesen/Mesen/master/LICENSE && mv LICENSE mesen_libretro-LICENSE.txt
+        wget http://buildbot.libretro.com/nightly/linux/x86_64/latest/mesen-s_libretro.so.zip && unzip -o mesen-s_libretro.so.zip && rm mesen-s_libretro.so.zip && echo https://github.com/SourMesen/Mesen-S >> mesen-s_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/SourMesen/Mesen-S/master/LICENSE && mv LICENSE mesen-s_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/linux/x86_64/latest/kronos_libretro.so.zip && unzip -o kronos_libretro.so.zip && rm kronos_libretro.so.zip && echo https://github.com/libretro/yabause >> kronos_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/yabause/master/yabause/COPYING && mv COPYING kronos_libretro-LICENSE.txt
+        wget http://buildbot.libretro.com/nightly/linux/x86_64/latest/fbneo_libretro.so.zip && unzip -o fbneo_libretro.so.zip && rm fbneo_libretro.so.zip && echo https://github.com/libretro/FBNeo >> fbneo_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/finalburnneo/FBNeo/master/src/license.txt && mv license.txt fbneo_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/linux/x86_64/latest/genesis_plus_gx_libretro.so.zip && unzip -o genesis_plus_gx_libretro.so.zip && rm genesis_plus_gx_libretro.so.zip && echo https://github.com/libretro/Genesis-Plus-GX >> genesis_plus_gx_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/Genesis-Plus-GX/master/LICENSE.txt && mv LICENSE.txt genesis_plus_gx_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/linux/x86_64/latest/genesis_plus_gx_wide_libretro.so.zip && unzip -o genesis_plus_gx_wide_libretro.so.zip && rm genesis_plus_gx_wide_libretro.so.zip
+        wget https://buildbot.libretro.com/nightly/linux/x86_64/latest/mgba_libretro.so.zip && unzip -o mgba_libretro.so.zip && rm mgba_libretro.so.zip && echo https://github.com/libretro/mgba >> mgba_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/mgba/master/LICENSE && mv LICENSE mgba_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/linux/x86_64/latest/parallel_n64_libretro.so.zip && unzip -o parallel_n64_libretro.so.zip && rm parallel_n64_libretro.so.zip && echo https://github.com/libretro/parallel-n64 >> parallel_n64_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/mupen64plus-libretro-nx/develop/LICENSE && mv LICENSE parallel_n64_libretro-LICENSE.txt
+        wget https://buildbot.libretro.com/nightly/linux/x86_64/latest/stella_libretro.so.zip && unzip -o stella_libretro.so.zip && rm stella_libretro.so.zip && echo https://github.com/stella-emu/stella >> stella_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/stella-emu/stella/master/License.txt && mv License.txt stella_libretro-LICENSE.txt
+        wget http://buildbot.libretro.com/nightly/linux/x86_64/latest/sameboy_libretro.so.zip && unzip -o sameboy_libretro.so.zip && rm sameboy_libretro.so.zip && echo https://github.com/libretro/SameBoy >> sameboy_libretro-SOURCE.txt && wget https://raw.githubusercontent.com/libretro/SameBoy/buildbot/LICENSE && mv LICENSE sameboy_libretro-LICENSE.txt
+    - name: Zip it up!
+      run: 7z a -mx=9 -x'!README.md' -x'!LICENSE' linux_cores.7z *
+    - name: Upload Linux assets bundle
+      uses: actions/upload-artifact@v2
+      with:
+        name: linux_cores.7z
+        path: linux_cores.7z
+    - name: Upload cores
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: linux_cores.7z
+        tag: Playtest
+        asset_name: linux_cores.7z
+        overwrite: true    
+
+  Linux_Steam:
+    name: RetroArch Steam Nightly Linux
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Fetch dependencies
+      run: sudo apt-get update ; sudo apt-get install libasound2-dev libavcodec-dev libavdevice-dev libavformat-dev libavutil-dev libc6-dev libdbus-1-dev libdrm-dev libegl1-mesa-dev libfreetype6-dev libgbm-dev libglm-dev libjack-jackd2-dev libopenal-dev libpulse-dev libsdl2-dev libswscale-dev libudev-dev libusb-1.0-0-dev libv4l-dev libvulkan-dev libxinerama-dev libxml2-dev libxv-dev libxxf86vm-dev pkg-config python3-dev qt5-default qtbase5-dev wayland-protocols x11proto-xext-dev zlib1g-dev libx11-dev libx11-xcb-dev
+    - name: Fetch linuxdeploy
+      run: wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage && chmod +x linuxdeploy-x86_64.AppImage
+    - name: Fetch RetroArch source tree
+      run: git clone https://github.com/libretro/RetroArch.git
+    - name: Build RetroArch
+      run: cd RetroArch && mkdir AppDir && ./configure --enable-steam --disable-qt --prefix=/usr && make -j8 && make install DESTDIR=AppDir prefix=/usr && ../linuxdeploy-x86_64.AppImage --appdir AppDir --output appimage && mv RetroArch*.AppImage ../RetroArch-Linux-x86_64-Nightly.AppImage
+    - name: Check AppImage for common issues
+      run: wget https://github.com/TheAssassin/appimagelint/releases/download/continuous/appimagelint-x86_64.AppImage && chmod +x appimagelint-x86_64.AppImage && ./appimagelint-x86_64.AppImage RetroArch-Linux-x86_64-Nightly.AppImage
+    - name: Upload RetroArch AppImage
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: RetroArch-Linux-x86_64-Nightly.AppImage
+        tag: Steam
+        asset_name: RetroArch-Linux-x86_64-Nightly.AppImage
+        overwrite: true
+        
+  Linux_LTS_Steam:
+    name: RetroArch Steam Nightly LTS Linux
+    runs-on: ubuntu-16.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Fetch dependencies
+      run: sudo apt-get update ; sudo apt-get install libasound2-dev libavcodec-dev libavdevice-dev libavformat-dev libavutil-dev libc6-dev libdbus-1-dev libdrm-dev libegl1-mesa-dev libfreetype6-dev libgbm-dev libglm-dev libjack-jackd2-dev libopenal-dev libpulse-dev libsdl2-dev libswscale-dev libudev-dev libusb-1.0-0-dev libv4l-dev libvulkan-dev libxinerama-dev libxml2-dev libxv-dev libxxf86vm-dev pkg-config python3-dev qt5-default qtbase5-dev wayland-protocols x11proto-xext-dev zlib1g-dev libx11-dev libx11-xcb-dev
+    - name: Fetch linuxdeploy
+      run: wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage && chmod +x linuxdeploy-x86_64.AppImage
+    - name: Fetch RetroArch source tree
+      run: git clone https://github.com/libretro/RetroArch.git
+    - name: Build RetroArch
+      run: cd RetroArch && mkdir AppDir && ./configure --enable-steam --disable-qt --prefix=/usr && make -j8 && make install DESTDIR=AppDir prefix=/usr && ../linuxdeploy-x86_64.AppImage --appdir AppDir --output appimage && mv RetroArch*.AppImage ../RetroArch-Linux-x86_64-Nightly.AppImage
+    - name: Check AppImage for common issues
+      run: wget https://github.com/TheAssassin/appimagelint/releases/download/continuous/appimagelint-x86_64.AppImage && chmod +x appimagelint-x86_64.AppImage && ./appimagelint-x86_64.AppImage RetroArch-Linux-x86_64-Nightly.AppImage
+    - name: Upload RetroArch AppImage
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: RetroArch-Linux-x86_64-Nightly.AppImage
+        tag: Steam
+        asset_name: RetroArch-Linux-x86_64-Nightly.AppImage
+        overwrite: true        
+                      
