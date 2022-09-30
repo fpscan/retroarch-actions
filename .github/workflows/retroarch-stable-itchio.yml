@@ -27,7 +27,7 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
           CHANNEL: windows
           ITCH_GAME: RetroArch
-          ITCH_USER: gadsby
+          ITCH_USER: retroarchofficial
           PACKAGE: retroarch-windows.zip
           VERSION: ${{ github.event.inputs.version }}
     - name: windows x64 cores
@@ -38,7 +38,7 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
           CHANNEL: windows-cores
           ITCH_GAME: RetroArch
-          ITCH_USER: gadsby
+          ITCH_USER: retroarchofficial
           PACKAGE: RetroArch_cores.7z
           VERSION: ${{ github.event.inputs.version }}          
     - name: windows x32
@@ -56,7 +56,7 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
           CHANNEL: windowsx32
           ITCH_GAME: RetroArch
-          ITCH_USER: gadsby
+          ITCH_USER: retroarchofficial
           PACKAGE: retroarch-windows-x32.zip
           VERSION: ${{ github.event.inputs.version }}
     - name: windows x32 cores
@@ -69,7 +69,7 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
           CHANNEL: windowsx32-cores
           ITCH_GAME: RetroArch
-          ITCH_USER: gadsby
+          ITCH_USER: retroarchofficial
           PACKAGE: RetroArch_cores.7z
           VERSION: ${{ github.event.inputs.version }}          
     - name: linux x64
@@ -87,7 +87,7 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
           CHANNEL: linux-x86_64
           ITCH_GAME: RetroArch
-          ITCH_USER: gadsby
+          ITCH_USER: retroarchofficial
           PACKAGE: retroarch-linux-x86_64.zip
           VERSION: ${{ github.event.inputs.version }}
     - name: linux x64-qt
@@ -105,7 +105,7 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
           CHANNEL: linux-x86_64-qt
           ITCH_GAME: RetroArch
-          ITCH_USER: gadsby
+          ITCH_USER: retroarchofficial
           PACKAGE: retroarch-linux-x86_64-qt.zip
           VERSION: ${{ github.event.inputs.version }}
     - name: linux x64 cores
@@ -118,7 +118,7 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
           CHANNEL: linux-x86_64-cores
           ITCH_GAME: RetroArch
-          ITCH_USER: gadsby
+          ITCH_USER: retroarchofficial
           PACKAGE: RetroArch_cores.7z
           VERSION: ${{ github.event.inputs.version }}          
     - name: linux x86
@@ -136,7 +136,7 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
           CHANNEL: linux-x86
           ITCH_GAME: RetroArch
-          ITCH_USER: gadsby
+          ITCH_USER: retroarchofficial
           PACKAGE: retroarch-linux-x86.zip
           VERSION: ${{ github.event.inputs.version }}
     - name: linux x86-qt
@@ -154,7 +154,7 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
           CHANNEL: linux-x86-qt
           ITCH_GAME: RetroArch
-          ITCH_USER: gadsby
+          ITCH_USER: retroarchofficial
           PACKAGE: retroarch-linux-x86-qt.zip
           VERSION: ${{ github.event.inputs.version }}
     - name: linux x86 cores
@@ -167,6 +167,6 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
           CHANNEL: linux-x86-cores
           ITCH_GAME: RetroArch
-          ITCH_USER: gadsby
+          ITCH_USER: retroarchofficial
           PACKAGE: RetroArch_cores.7z
           VERSION: ${{ github.event.inputs.version }}          
