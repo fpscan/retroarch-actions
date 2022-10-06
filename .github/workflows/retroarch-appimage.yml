@@ -16,7 +16,7 @@ on:
 jobs:
   Assets:
     name: Collect and bundle assets
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v2
@@ -74,7 +74,7 @@ jobs:
 
   Playtest_Windows_Cores:
     name: Collect Cores for Steam Playtest Windows
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v2
@@ -109,7 +109,7 @@ jobs:
         
   Playtest_Linux_Cores:
     name: Collect Cores for Steam Playtest Linux
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v2
@@ -144,7 +144,7 @@ jobs:
 
   Linux_Steam:
     name: RetroArch Steam Nightly Linux
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -191,13 +191,3 @@ jobs:
         tag: Steam
         asset_name: RetroArch-Linux-x86_64-Nightly.AppImage
         overwrite: true        
-
-  Clean:
-    name: Clean process
-    runs-on: self-hosted
-
-    steps:
-      - uses: rtCamp/action-cleanup@master
-      - uses: actions/checkout@v2
-      - run: echo Hello World
-
