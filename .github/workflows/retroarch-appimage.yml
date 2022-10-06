@@ -75,7 +75,7 @@ jobs:
 
   Playtest_Windows_Cores:
     name: Collect Cores for Steam Playtest Windows
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     
     steps:
     - uses: actions/checkout@v2
@@ -110,7 +110,7 @@ jobs:
         
   Playtest_Linux_Cores:
     name: Collect Cores for Steam Playtest Linux
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     
     steps:
     - uses: actions/checkout@v2
@@ -145,7 +145,7 @@ jobs:
 
   Linux_Steam:
     name: RetroArch Steam Nightly Linux
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
     - uses: actions/checkout@v2
@@ -192,4 +192,12 @@ jobs:
         tag: Steam
         asset_name: RetroArch-Linux-x86_64-Nightly.AppImage
         overwrite: true        
-                      
+
+  Clean:
+    name: Clean process
+    runs-on: self-hosted
+
+    steps:
+    - name: Deleting everything    
+    - uses: TooMuch4U/actions-clean@v2.1
+
