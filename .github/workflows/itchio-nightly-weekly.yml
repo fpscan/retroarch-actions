@@ -1,0 +1,201 @@
+name: Itchio Nightly (weekly)
+on:
+  schedule:
+  - cron: "0 13 * * 1"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'version'     
+        required: true
+        default: '1.12.0'
+    
+jobs:
+  download_game_linux_x64:
+    name: linux x64
+    runs-on: ubuntu-latest
+    
+    steps:         
+    - name: download the game from buildbot
+      run: |
+          rm -rf *
+          wget http://buildbot.libretro.com/nightly/linux/x86_64/RetroArch.7z
+    - uses: josephbmanley/butler-publish-itchio-action@master
+      name: deploy to itch.io
+      env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
+          CHANNEL: linux-x86_64-weekly
+          ITCH_GAME: RetroArch
+          ITCH_USER: retroarchofficial
+          PACKAGE: RetroArch.7z
+          VERSION: ${{ github.event.inputs.version }}-x64-weekly
+
+  download_game_linux_x64-qt:
+    name: linux x64-qt
+    runs-on: ubuntu-latest
+    
+    steps:         
+    - name: download the game from buildbot
+      run: |
+          rm -rf *
+          wget http://buildbot.libretro.com/nightly/linux/x86_64/RetroArch_Qt.7z
+    - uses: josephbmanley/butler-publish-itchio-action@master
+      name: deploy to itch.io
+      env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
+          CHANNEL: linux-x86_64-qt-weekly
+          ITCH_GAME: RetroArch
+          ITCH_USER: retroarchofficial
+          PACKAGE: RetroArch_Qt.7z
+          VERSION: ${{ github.event.inputs.version }}-qt-x64-weekly            
+
+  download_game_linux_x86:
+    name: linux x86
+    runs-on: ubuntu-latest
+    
+    steps:         
+    - name: download the game from buildbot
+      run: |
+          rm -rf *
+          wget http://buildbot.libretro.com/nightly/linux/x86/RetroArch.7z
+    - uses: josephbmanley/butler-publish-itchio-action@master
+      name: deploy to itch.io
+      env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
+          CHANNEL: linux-x86-weekly
+          ITCH_GAME: RetroArch
+          ITCH_USER: retroarchofficial
+          PACKAGE: RetroArch.7z
+          VERSION: ${{ github.event.inputs.version }}-x86-weekly
+          
+  download_game_linux_x86-qt:
+    name: linux x86-qt
+    runs-on: ubuntu-latest
+    
+    steps:         
+    - name: download the game from buildbot
+      run: |
+          rm -rf *
+          wget http://buildbot.libretro.com/nightly/linux/x86/RetroArch_Qt.7z
+    - uses: josephbmanley/butler-publish-itchio-action@master
+      name: deploy to itch.io
+      env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
+          CHANNEL: linux-x86-qt-weekly
+          ITCH_GAME: RetroArch
+          ITCH_USER: retroarchofficial
+          PACKAGE: RetroArch_Qt.7z
+          VERSION: ${{ github.event.inputs.version }}-qt-x86-weekly
+
+  download_game_linux_x64_cores:
+    name: linux x64-cores
+    runs-on: ubuntu-latest
+    
+    steps:         
+    - name: download the game x64 version of cores
+      run: |
+          rm -rf *
+          wget http://buildbot.libretro.com/nightly/linux/x86_64/RetroArch_cores.7z
+    - uses: josephbmanley/butler-publish-itchio-action@master
+      name: deploy to itch.io
+      env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
+          CHANNEL: linux-x86_64-cores-weekly
+          ITCH_GAME: RetroArch
+          ITCH_USER: retroarchofficial
+          PACKAGE: RetroArch_cores.7z
+          VERSION: ${{ github.event.inputs.version }}-cores-x64-weekly
+
+  download_game_linux_x86_cores:
+    name: linux x86-cores
+    runs-on: ubuntu-latest
+    
+    steps:         
+    - name: download the cores from buildbot
+      run: |
+          rm -rf *
+          wget http://buildbot.libretro.com/nightly/linux/x86/RetroArch_cores.7z
+    - uses: josephbmanley/butler-publish-itchio-action@master
+      name: deploy to itch.io
+      env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
+          CHANNEL: linux-x86-cores-weekly
+          ITCH_GAME: RetroArch
+          ITCH_USER: retroarchofficial
+          PACKAGE: RetroArch_cores.7z
+          VERSION: ${{ github.event.inputs.version }}-cores-x86-weekly
+
+  download_game_windows_x64_weekly:
+    name: windows x64
+    runs-on: ubuntu-latest
+    
+    steps:         
+    - name: download the game from buildbot nightly
+      run: |
+          rm -rf *
+          wget wget http://buildbot.libretro.com/nightly/windows/x86_64/RetroArch.7z
+    - uses: josephbmanley/butler-publish-itchio-action@master
+      name: deploy to itch.io
+      env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
+          CHANNEL: windows-x86_64-weekly
+          ITCH_GAME: RetroArch
+          ITCH_USER: retroarchofficial
+          PACKAGE: RetroArch.7z
+          VERSION: ${{ github.event.inputs.version }}-x64-weekly
+
+  download_game_windows_x86_weekly:
+    name: windows x86
+    runs-on: ubuntu-latest
+    
+    steps:         
+    - name: download the game from buildbot nightly
+      run: |
+          rm -rf *
+          wget http://buildbot.libretro.com/nightly/windows/x86/RetroArch.7z
+    - uses: josephbmanley/butler-publish-itchio-action@master
+      name: deploy to itch.io
+      env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
+          CHANNEL: windows-x86-weekly
+          ITCH_GAME: RetroArch
+          ITCH_USER: retroarchofficial
+          PACKAGE: RetroArch.7z
+          VERSION: ${{ github.event.inputs.version }}-x86-weekly
+          
+  download_game_windows_x64_cores:
+    name: windows x64-cores
+    runs-on: ubuntu-latest
+    
+    steps:         
+    - name: download the game x64 version of cores from buildbot nightly
+      run: |
+          rm -rf *
+          wget http://buildbot.libretro.com/nightly/windows/x86_64/RetroArch_cores.7z
+    - uses: josephbmanley/butler-publish-itchio-action@master
+      name: deploy to itch.io
+      env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
+          CHANNEL: windows-x86_64-cores-weekly
+          ITCH_GAME: RetroArch
+          ITCH_USER: retroarchofficial
+          PACKAGE: RetroArch_cores.7z
+          VERSION: ${{ github.event.inputs.version }}-cores-x64-weekly
+
+  download_game_windows_x86_cores:
+    name: windows x86-cores
+    runs-on: ubuntu-latest
+    
+    steps:         
+    - name: download the cores from buildbot
+      run: |
+          rm -rf *
+          wget http://buildbot.libretro.com/nightly/windows/x86/RetroArch_cores.7z
+    - uses: josephbmanley/butler-publish-itchio-action@master
+      name: deploy to itch.io
+      env:
+          BUTLER_CREDENTIALS: ${{ secrets.ITCH_API_KEY }}
+          CHANNEL: windows-x86-cores-weekly
+          ITCH_GAME: RetroArch
+          ITCH_USER: retroarchofficial
+          PACKAGE: RetroArch_cores.7z
+          VERSION: ${{ github.event.inputs.version }}-cores-x86-weekly
